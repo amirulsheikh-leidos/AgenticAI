@@ -53,27 +53,6 @@ class AgentCoordinator:
         }
 
     def run_workflow(self, application_id: str) -> Dict[str, Any]:
-        """
-        Execute the full workflow for `application_id` and return one
-        aggregated result dict.
-
-        (Activity 1.3):
-        1. Call self.planner.build_plan(application_id) to get the ordered
-           list of step dicts (each has "agent" and "application_id" keys).
-        2. Create an empty `results: Dict[str, Any] = {}` accumulator.
-        3. For each step in the plan, in order:
-           a. Look up the callable in self.steps by step["agent"]. If the
-              name isn't registered, raise a KeyError naming the missing step.
-           b. Call it as `callable(application_id=application_id, context=results)`
-              - passing the results accumulated so far as `context`, so later
-              steps (especially "recommendation") can read earlier steps'
-              output.
-           c. Store the returned dict under `results[step["agent"]] = <returned dict>`.
-        4. Return `results` (a dict keyed by agent name: "customer_profile",
-           "credit_risk", "compliance", "lending_policy", "recommendation" -
-           this is the shape src/core/workflow_validator.py checks in
-           Activity 2.3).
-        """
         plan = self.planner.build_plan(application_id)
         results: Dict[str, Any] = {}
 
