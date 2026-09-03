@@ -1,7 +1,7 @@
 """
 MCP Client.
 
-TODO: Participants will implement fetch_credit_score_via_mcp() (Activity
+Participants will implement fetch_credit_score_via_mcp() (Activity
 2.1) - the one MCP client call site for this bootcamp (Scope Decision 2).
 """
 import asyncio
@@ -31,7 +31,7 @@ async def _call_get_credit_score(customer_id: str) -> Dict[str, Any]:
     Open an MCP client session against the local server (launched via
     _server_params) and call its "get_credit_score_tool" tool.
 
-    TODO (Activity 2.1):
+    (Activity 2.1):
     1. Use `async with stdio_client(_server_params) as (read, write):` to
        get the transport streams.
     2. Inside that block, use
@@ -43,9 +43,11 @@ async def _call_get_credit_score(customer_id: str) -> Dict[str, Any]:
        single JSON-serializable dict, so parse the first block's text with
        `json.loads(result.content[0].text)` (import json) and return it.
     """
-    # TODO: launch the server, open a session, call the tool, and return the
-    # parsed result dict.
-    raise NotImplementedError("_call_get_credit_score is not implemented yet - see src/mcp/mcp_client.py")
+    async with stdio_client(_server_params) as (read, write):
+        async with ClientSession(read, write) as session:
+            await session.initialize()
+            result = await session.call_tool("get_credit_score_tool", {"customer_id": customer_id})
+            return json.loads(result.content[0].text)
 
 
 def fetch_credit_score_via_mcp(customer_id: str) -> Dict[str, Any]:

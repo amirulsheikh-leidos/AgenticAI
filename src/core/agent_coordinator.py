@@ -1,7 +1,7 @@
 """
 Agent Coordinator.
 
-TODO: Participants will implement run_workflow() (Activity 1.3) - this is
+Participants will implement run_workflow() (Activity 1.3) - this is
 the "wire the 5 provided specialist agents into steps the Planner can
 invoke" layer, distinct from writing any agent's internal logic (all 5
 specialist agents are provided, complete, vendored-style - see Scope
@@ -57,7 +57,7 @@ class AgentCoordinator:
         Execute the full workflow for `application_id` and return one
         aggregated result dict.
 
-        TODO (Activity 1.3):
+        (Activity 1.3):
         1. Call self.planner.build_plan(application_id) to get the ordered
            list of step dicts (each has "agent" and "application_id" keys).
         2. Create an empty `results: Dict[str, Any] = {}` accumulator.
@@ -74,6 +74,14 @@ class AgentCoordinator:
            this is the shape src/core/workflow_validator.py checks in
            Activity 2.3).
         """
-        # TODO: build the plan, execute each step via self.steps, accumulate
-        # results, and return the aggregated dict described above.
-        raise NotImplementedError("AgentCoordinator.run_workflow is not implemented yet - see src/core/agent_coordinator.py")
+        plan = self.planner.build_plan(application_id)
+        results: Dict[str, Any] = {}
+
+        for step in plan:
+            agent_name = step["agent"]
+            if agent_name not in self.steps:
+                raise KeyError(f"No coordinator step registered for agent '{agent_name}'")
+            step_callable = self.steps[agent_name]
+            results[agent_name] = step_callable(application_id=application_id, context=results)
+
+        return results

@@ -3,7 +3,7 @@ MCP Server - exposes ONE enterprise capability (credit bureau lookup) as a
 Model Context Protocol tool (Scope Decision 2: one clean example of the
 protocol, not a full tool-surface migration).
 
-TODO: Participants will implement the get_credit_score_tool() body
+Participants will implement the get_credit_score_tool() body
 (Activity 2.1). The FastMCP server instance and tool registration
 (everything else in this file) are prefilled plumbing.
 """
@@ -32,15 +32,14 @@ def get_credit_score_tool(customer_id: str) -> Dict[str, Any]:
     """
     Look up a customer's credit bureau record by customer_id.
 
-    TODO (Activity 2.1): Delegate to
+    (Activity 2.1): Delegate to
     src.services.credit_score_service.get_credit_score(customer_id) and
     return its result directly - FastMCP serializes the returned dict as the
     tool's JSON result. This is the one enterprise capability this MCP
     server wraps (config/mcp_config.yaml's tools.get_credit_score entry
     documents its declared shape).
     """
-    # TODO: call get_credit_score(customer_id) and return its result.
-    raise NotImplementedError("get_credit_score_tool is not implemented yet - see src/mcp/mcp_server.py")
+    return get_credit_score(customer_id)
 
 
 if __name__ == "__main__":

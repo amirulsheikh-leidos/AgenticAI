@@ -1,7 +1,7 @@
 """
 Loan application lookup service.
 
-TODO: Participants will implement the lookup logic (Activity 1.1 exploration
+Participants will implement the lookup logic (Activity 1.1 exploration
 uses this; it is exercised for real starting Activity 1.2/1.3).
 """
 import json
@@ -22,7 +22,7 @@ def get_loan_application(application_id: str) -> Dict[str, Any]:
     Look up a loan application (applicant, requested amount, tenure, income,
     employment status, etc.) by its application_id.
 
-    TODO: Load data/business_data/loan_applications.json via
+    Load data/business_data/loan_applications.json via
     load_business_data(), search its "applications" list for a matching
     application_id, and return that application's full dict. If no
     application matches, return
@@ -30,7 +30,7 @@ def get_loan_application(application_id: str) -> Dict[str, Any]:
     instead of raising.
     """
     data = load_business_data("loan_applications.json")
-
-    # TODO: search data["applications"] for application_id and return the
-    # match, or the not-found dict shape described above.
-    raise NotImplementedError("Loan application lookup not implemented - see src/services/loan_application_service.py")
+    for application in data.get("applications", []):
+        if application.get("application_id") == application_id:
+            return application
+    return {"error": "Application not found", "application_id": application_id}

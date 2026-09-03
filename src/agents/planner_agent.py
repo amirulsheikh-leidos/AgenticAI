@@ -1,7 +1,7 @@
 """
 Planner Agent.
 
-TODO: Participants will implement build_plan() (Activity 1.2), together
+Participants will implement build_plan() (Activity 1.2), together
 with the two loan-domain service lookups it depends on
 (src/services/loan_application_service.py, src/services/credit_score_service.py -
 same activity, see the workbook's Activity 1.2 instructions).
@@ -48,6 +48,12 @@ class PlannerAgent:
            src/core/agent_coordinator.py registers in Activity 1.3, so don't
            rename them - use self.sequence values as-is.
         """
-        # TODO: validate the application exists, then build the ordered
-        # list of step dicts described above.
-        raise NotImplementedError("PlannerAgent.build_plan is not implemented yet - see src/agents/planner_agent.py")
+        application = get_loan_application(application_id)
+        if "error" in application:
+            raise ValueError(application["error"])
+
+        return [
+            {"step": i + 1, "agent": name, "application_id": application_id}
+            for i, name in enumerate(self.sequence)
+        ]
+
