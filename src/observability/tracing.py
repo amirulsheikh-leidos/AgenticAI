@@ -1,7 +1,7 @@
 """
 LangSmith Observability.
 
-TODO: Participants will implement run_planner_with_tracing() (Activity 2.2)
+Participants will implement run_planner_with_tracing() (Activity 2.2)
 - the one orchestration entry point wrapped in tracing (Scope Decision 3:
 two env vars plus one traced entry point, no dashboards/eval datasets).
 configure_langsmith()'s env loading and _run_with_local_trace()'s
@@ -106,7 +106,7 @@ def run_planner_with_tracing(run_fn: Callable[..., Any], *args: Any, **kwargs: A
     Run `run_fn(*args, **kwargs)` (e.g. an AgentCoordinator.run_workflow
     bound method) wrapped in LangSmith tracing when tracing is enabled.
 
-    TODO (Activity 2.2):
+    (Activity 2.2):
     1. Call `tracing_enabled = configure_langsmith()`.
     2. If tracing_enabled is False, call and return
        `_run_with_local_trace(run_fn, *args, **kwargs)` - the prefilled
@@ -118,7 +118,11 @@ def run_planner_with_tracing(run_fn: Callable[..., Any], *args: Any, **kwargs: A
        `traced_fn = traceable(name="loan_underwriting_planner_run")(run_fn)` -
        and call/return `traced_fn(*args, **kwargs)`.
     """
-    # TODO: check configure_langsmith(), then either call
-    # _run_with_local_trace(run_fn, *args, **kwargs) or wrap run_fn with
-    # langsmith.traceable() first.
-    raise NotImplementedError("run_planner_with_tracing is not implemented yet - see src/observability/tracing.py")
+    tracing_enabled = configure_langsmith()
+    if not tracing_enabled:
+        return _run_with_local_trace(run_fn, *args, **kwargs)
+
+    from langsmith import traceable
+
+    traced_fn = traceable(name="loan_underwriting_planner_run")(run_fn)
+    return traced_fn(*args, **kwargs)

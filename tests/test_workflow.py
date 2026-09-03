@@ -7,7 +7,7 @@ None of these tests call the real OpenAI API: they check plan/registry/
 validation *shape*, not LLM-generated content, so they run without any
 credentials configured.
 
-TODO: Participants implement the body of the three tests marked TODO below.
+Participants implement the body of the three tests marked TODO below.
 The other two tests (import/registration boilerplate) are prefilled.
 """
 from src.agents.compliance_agent import ComplianceAgent
@@ -47,29 +47,33 @@ def test_mcp_server_tool_registered():
 
 def test_planner_builds_expected_plan():
     """
-    TODO (Activity 3.1): Construct a PlannerAgent(), call
+    (Activity 3.1): Construct a PlannerAgent(), call
     build_plan(SAMPLE_APPLICATION_ID), and assert:
       - the result has exactly 5 steps
       - the set of step["agent"] values equals EXPECTED_STEP_NAMES
       - every step's "application_id" equals SAMPLE_APPLICATION_ID
     """
-    # TODO: build the plan and assert on its shape as described above.
-    raise NotImplementedError("test_planner_builds_expected_plan is not implemented yet - see tests/test_workflow.py")
+    planner = PlannerAgent()
+    plan = planner.build_plan(SAMPLE_APPLICATION_ID)
+    assert len(plan) == 5
+    assert {step["agent"] for step in plan} == EXPECTED_STEP_NAMES
+    assert all(step["application_id"] == SAMPLE_APPLICATION_ID for step in plan)
 
 
 def test_agent_coordinator_registers_all_steps():
     """
-    TODO (Activity 3.1): Construct an AgentCoordinator() and assert that
+    (Activity 3.1): Construct an AgentCoordinator() and assert that
     set(coordinator.steps.keys()) == EXPECTED_STEP_NAMES, and that every
     value in coordinator.steps is callable.
     """
-    # TODO: construct the coordinator and assert on its steps registry.
-    raise NotImplementedError("test_agent_coordinator_registers_all_steps is not implemented yet - see tests/test_workflow.py")
+    coordinator = AgentCoordinator()
+    assert set(coordinator.steps.keys()) == EXPECTED_STEP_NAMES
+    assert all(callable(step_fn) for step_fn in coordinator.steps.values())
 
 
 def test_workflow_validator_flags_missing_sections():
     """
-    TODO (Activity 3.1): Construct a WorkflowValidator().
+    (Activity 3.1): Construct a WorkflowValidator().
       - Call validate({}) (an empty result) and assert it returns a non-None
         list of errors (every required section is missing).
       - Call validate() again with a well-formed fake result dict containing
@@ -77,6 +81,16 @@ def test_workflow_validator_flags_missing_sections():
         credit_risk={}, compliance={}, lending_policy={}) plus
         recommendation={"decision": "Approve"}, and assert it returns None.
     """
-    # TODO: exercise WorkflowValidator.validate() with both an invalid and a
-    # valid result shape, asserting the return values described above.
-    raise NotImplementedError("test_workflow_validator_flags_missing_sections is not implemented yet - see tests/test_workflow.py")
+    validator = WorkflowValidator()
+
+    errors = validator.validate({})
+    assert errors is not None and len(errors) > 0
+
+    well_formed = {
+        "customer_profile": {},
+        "credit_risk": {},
+        "compliance": {},
+        "lending_policy": {},
+        "recommendation": {"decision": "Approve"},
+    }
+    assert validator.validate(well_formed) is None
